@@ -1,0 +1,130 @@
+definitions:
+  common.Response:
+    properties:
+      code:
+        type: integer
+      data:
+        type: object
+      msg:
+        type: string
+    type: object
+  dto.JobInput:
+    properties:
+      command:
+        type: string
+      cron_expr:
+        type: string
+      name:
+        type: string
+    type: object
+  dto.JobOutput:
+    properties:
+      command:
+        type: string
+      cron_expr:
+        type: string
+      name:
+        type: string
+    type: object
+info:
+  contact: {}
+  title: 分布式任务调度器
+  version: "0.1"
+paths:
+  /:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 首页
+      tags:
+      - 首页
+  /admin/login:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 后台登录
+      tags:
+      - 管理后台
+  /job/delete:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 删除任务
+      tags:
+      - 任务
+  /job/kill:
+    post:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 杀死任务
+      tags:
+      - 任务
+  /job/list:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: 列出任务
+      tags:
+      - 任务
+  /job/save:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.JobInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: desc
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/dto.JobOutput'
+              type: object
+      summary: 保存任务
+      tags:
+      - 任务
+swagger: "2.0"

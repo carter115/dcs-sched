@@ -1,0 +1,18 @@
+server:
+  addr: ":8080"
+  read_timeout: 10m
+  write_timeout: 10m
+  max_header_bytes: 10000000
+
+logger:
+  file: [a.log, b.log]
+  level: info
+
+etcd:
+  endpoints: ["127.0.0.1:2379"]
+  dial_timeout: 10s
+
+redis:
+  addr: 127.0.0.1:6379
+  password:
+  db: 1
