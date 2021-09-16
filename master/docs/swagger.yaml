@@ -1,4 +1,15 @@
 definitions:
+  common.Job:
+    properties:
+      command:
+        type: string
+      cron_expr:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
   common.Response:
     properties:
       code:
@@ -7,17 +18,10 @@ definitions:
         type: object
       msg:
         type: string
+      trace_id:
+        type: string
     type: object
   dto.JobInput:
-    properties:
-      command:
-        type: string
-      cron_expr:
-        type: string
-      name:
-        type: string
-    type: object
-  dto.JobOutput:
     properties:
       command:
         type: string
@@ -59,31 +63,48 @@ paths:
       summary: 后台登录
       tags:
       - 管理后台
-  /job/delete:
+  /job/delete/{id}:
     post:
       consumes:
       - application/json
+      parameters:
+      - description: 任务ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            type: string
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/common.Job'
+              type: object
       summary: 删除任务
       tags:
       - 任务
-  /job/kill:
+  /job/kill/{id}:
     post:
       consumes:
       - application/json
+      parameters:
+      - description: 任务ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/common.Response'
       summary: 杀死任务
       tags:
       - 任务
@@ -97,7 +118,14 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/common.Job'
+                  type: array
+              type: object
       summary: 列出任务
       tags:
       - 任务
@@ -116,14 +144,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: desc
+          description: OK
           schema:
-            allOf:
-            - $ref: '#/definitions/common.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/dto.JobOutput'
-              type: object
+            $ref: '#/definitions/common.Response'
       summary: 保存任务
       tags:
       - 任务

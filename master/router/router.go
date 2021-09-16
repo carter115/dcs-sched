@@ -49,5 +49,5 @@ func Server() error {
 // @Success 200 {string} string ""
 // @Router / [get]
 func homeHandler(c *gin.Context) {
-	c.JSON(200, common.NewResponse(common.Success, nil))
+	c.JSON(200, common.SuccessResponse(c, nil))
 }

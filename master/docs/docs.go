@@ -67,7 +67,7 @@ var doc = `{
                 }
             }
         },
-        "/job/delete": {
+        "/job/delete/{id}": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -79,17 +79,38 @@ var doc = `{
                     "任务"
                 ],
                 "summary": "删除任务",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "任务ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/common.Job"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
             }
         },
-        "/job/kill": {
+        "/job/kill/{id}": {
             "post": {
                 "consumes": [
                     "application/json"
@@ -101,11 +122,20 @@ var doc = `{
                     "任务"
                 ],
                 "summary": "杀死任务",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "任务ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/common.Response"
                         }
                     }
                 }
@@ -127,7 +157,22 @@ var doc = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/common.Job"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     }
                 }
@@ -158,21 +203,9 @@ var doc = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "desc",
+                        "description": "OK",
                         "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/common.Response"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "data": {
-                                            "$ref": "#/definitions/dto.JobOutput"
-                                        }
-                                    }
-                                }
-                            ]
+                            "$ref": "#/definitions/common.Response"
                         }
                     }
                 }
@@ -180,6 +213,23 @@ var doc = `{
         }
     },
     "definitions": {
+        "common.Job": {
+            "type": "object",
+            "properties": {
+                "command": {
+                    "type": "string"
+                },
+                "cron_expr": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                }
+            }
+        },
         "common.Response": {
             "type": "object",
             "properties": {
@@ -191,24 +241,13 @@ var doc = `{
                 },
                 "msg": {
                     "type": "string"
+                },
+                "trace_id": {
+                    "type": "string"
                 }
             }
         },
         "dto.JobInput": {
-            "type": "object",
-            "properties": {
-                "command": {
-                    "type": "string"
-                },
-                "cron_expr": {
-                    "type": "string"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "dto.JobOutput": {
             "type": "object",
             "properties": {
                 "command": {

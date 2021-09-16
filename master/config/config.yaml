@@ -1,5 +1,5 @@
 server:
-  addr: ":8080"
+  addr: ":6060"
   read_timeout: 10m
   write_timeout: 10m
   max_header_bytes: 10000000

@@ -2,14 +2,14 @@
 
 ## 分布式架构
 
-整体
+- 整体
 
 ![](./static/image/arch.png)
 
-master
+- master
 
 ![](./static/image/master.png)
 
-worker
+- worker
 
 ![](./static/image/worker.png)

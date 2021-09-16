@@ -12,7 +12,7 @@ func Recovery() gin.HandlerFunc {
 		defer func() {
 			if err := recover(); err != nil {
 				gslog.Errorf(context.Background(), "panic: %+v", err)
-				c.JSON(200, common.NewResponse(common.Unknown, nil))
+				c.JSON(200, common.NewResponse(c, common.Unknown, nil))
 				c.Abort()
 				return
 			}

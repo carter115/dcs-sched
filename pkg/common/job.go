@@ -8,6 +8,7 @@ import (
 const (
 	JOB_ID_KEY   = "cron:jobid"
 	JOB_SAVE_DIR = "/cron/job/"
+	JOB_KILL_DIR = "/cron/killer/"
 )
 
 type Job struct {
