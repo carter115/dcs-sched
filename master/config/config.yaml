@@ -5,11 +5,14 @@ server:
   max_header_bytes: 10000000
 
 logger:
-  file: [a.log, b.log]
+  project: sched
+  app: master
+  file: master.log
   level: info
+  outputs: [ "file" ]
 
 etcd:
-  endpoints: ["127.0.0.1:2379"]
+  endpoints: [ "127.0.0.1:2379" ]
   dial_timeout: 10s
 
 redis:

@@ -23,11 +23,14 @@ func init() {
 
 	// 加载日志组件
 	logConfig := gslog.Config{
-		ProjectName: "sched",
-		AppName:     "master",
-		FileName:    "master.log",
-		Level:       "info",
-		Outputs:     []string{"file"},
+		ProjectName: config.Config.Logger.Project,
+		AppName:     config.Config.Logger.App,
+		FileName:    config.Config.Logger.File,
+		Level:       config.Config.Logger.Level,
+		Outputs:     config.Config.Logger.Outputs,
+		Hooks:       config.Config.Logger.Hooks,
+		EsServer:    config.Config.Logger.EsServer,
+		StashServer: config.Config.Logger.StashServer,
 	}
 	gslog.InitLogger(logConfig)
 

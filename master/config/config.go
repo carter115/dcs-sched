@@ -17,8 +17,14 @@ type config struct {
 	} `yaml:"server"`
 
 	Logger struct {
-		File  []string `yaml:"file,flow"`
-		Level string   `yaml:"level"`
+		Project     string   `yaml:"project"`
+		App         string   `yaml:"app"`
+		File        string   `yaml:"file"`
+		Level       string   `yaml:"level"`
+		Outputs     []string `yaml:"outputs,flow"`
+		Hooks       []string `yaml:"hooks,flow"`
+		EsServer    []string `yaml:"es_server,flow"`
+		StashServer string   `yaml:"stash_server"`
 	} `yaml:"logger"`
 
 	Etcd struct {
