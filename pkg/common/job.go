@@ -29,13 +29,13 @@ func NewJob(name, command, cronExpr string) *Job {
 }
 
 // UnpackJob 反序列化Job
-func UnpackJob(bs []byte) (*Job, error) {
+func UnpackJob(bs []byte) *Job {
 	job := Job{}
 	if err := json.Unmarshal(bs, &job); err != nil {
 		gslog.Warning(context.Background(), "Unmarshal Job Error: Source:", string(bs))
-		return nil, nil
+		return nil
 	}
-	return &job, nil
+	return &job
 }
 
 // ExtractJobId 从etcd的key中提取jobId
@@ -44,6 +44,17 @@ func ExtractJobId(jobKey string) int64 {
 	id, err := strconv.Atoi(s)
 	if err != nil {
 		gslog.Warning(context.Background(), "ExtractJobId", err)
+		return 0
+	}
+	return int64(id)
+}
+
+// ExtractKillerId 从etcd的key中提取jobId
+func ExtractKillerId(killerKey string) int64 {
+	s := strings.TrimPrefix(killerKey, JOB_KILL_DIR)
+	id, err := strconv.Atoi(s)
+	if err != nil {
+		gslog.Warning(context.Background(), "ExtractKillerId", err)
 		return 0
 	}
 	return int64(id)

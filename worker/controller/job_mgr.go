@@ -58,7 +58,7 @@ func (m *jobMgr) watchJob() error {
 	}
 
 	for _, kvpair := range getResp.Kvs {
-		if job, err := common.UnpackJob(kvpair.Value); err == nil {
+		if job := common.UnpackJob(kvpair.Value); job != nil {
 			// TODO 把任务同步到scheudler
 			gslog.Warning(ctx, "把任务同步到scheudler", job)
 		}
@@ -76,14 +76,13 @@ func (m *jobMgr) watchJob() error {
 				var jobEvent *common.JobEvent
 				switch watchEvent.Type {
 				case mvccpb.PUT:
-					job, err := common.UnpackJob(watchEvent.Kv.Value)
-					if err != nil {
-						continue
+					if job := common.UnpackJob(watchEvent.Kv.Value); job != nil {
+						jobEvent = common.NewJobEvent(common.JOB_EVENT_SAVE, job)
 					}
-					jobEvent = common.BuildJobEvent(common.JOB_EVENT_SAVE, job)
+
 				case mvccpb.DELETE:
 					job := &common.Job{Id: common.ExtractJobId(string(watchEvent.Kv.Key))}
-					jobEvent = common.BuildJobEvent(common.JOB_EVENT_DELETE, job)
+					jobEvent = common.NewJobEvent(common.JOB_EVENT_DELETE, job)
 				}
 				// TODO 把(更新事件/删除事件)推给scheduler
 				gslog.Warning(ctx, "把(更新事件/删除事件)推给scheduler", jobEvent)
@@ -96,5 +95,20 @@ func (m *jobMgr) watchJob() error {
 
 // watchKiller 监听杀死任务
 func (m *jobMgr) watchKiller() error {
+	ctx := context.Background()
+	watchChan := m.watcher.Watch(ctx, common.JOB_KILL_DIR, clientv3.WithPrefix())
+	for watchResp := range watchChan {
+		for _, watchEvent := range watchResp.Events {
+			switch watchEvent.Type {
+			case mvccpb.PUT:
+				job := &common.Job{Id: common.ExtractKillerId(string(watchEvent.Kv.Key))}
+				jobEvent := common.NewJobEvent(common.JOB_EVENT_KILL, job)
+				// TODO 把事件推给scheduler
+				gslog.Warning(ctx, "把事件推给scheduler", jobEvent)
+
+			case mvccpb.DELETE: // killer标记过期, 被自动删除
+			}
+		}
+	}
 	return nil
 }
