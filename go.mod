@@ -17,6 +17,7 @@ require (
 	github.com/swaggo/gin-swagger v1.3.1
 	github.com/swaggo/swag v1.6.5
 	github.com/ugorji/go v1.2.6 // indirect
+	go.etcd.io/etcd/api/v3 v3.5.0 // indirect
 	go.etcd.io/etcd/client/v3 v3.5.0
 	golang.org/x/crypto v0.0.0-20210817164053-32db794688a5 // indirect
 	golang.org/x/net v0.0.0-20210903162142-ad29c8ab022f // indirect

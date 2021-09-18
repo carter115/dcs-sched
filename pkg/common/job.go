@@ -1,7 +1,12 @@
 package common
 
 import (
+	"context"
 	"dcs-sched/pkg/db"
+	"encoding/json"
+	"github.com/carter115/gslog"
+	"strconv"
+	"strings"
 	"sync"
 )
 
@@ -18,8 +23,30 @@ type Job struct {
 	CronExpr string `json:"cron_expr"`
 }
 
+// NewJob 生成任务
 func NewJob(name, command, cronExpr string) *Job {
 	return &Job{Id: NewJobId(), Name: name, Command: command, CronExpr: cronExpr}
+}
+
+// UnpackJob 反序列化Job
+func UnpackJob(bs []byte) (*Job, error) {
+	job := Job{}
+	if err := json.Unmarshal(bs, &job); err != nil {
+		gslog.Warning(context.Background(), "Unmarshal Job Error: Source:", string(bs))
+		return nil, nil
+	}
+	return &job, nil
+}
+
+// ExtractJobId 从etcd的key中提取jobId
+func ExtractJobId(jobKey string) int64 {
+	s := strings.TrimPrefix(jobKey, JOB_SAVE_DIR)
+	id, err := strconv.Atoi(s)
+	if err != nil {
+		gslog.Warning(context.Background(), "ExtractJobId", err)
+		return 0
+	}
+	return int64(id)
 }
 
 var (
@@ -27,7 +54,7 @@ var (
 	defaultId int64 = 0
 )
 
-// 生成jobId
+// NewJobId 生成jobId
 func NewJobId() int64 {
 	once.Do(setDefaultJobId)
 	return db.RedisCli.Incr(JOB_ID_KEY).Val()

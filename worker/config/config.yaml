@@ -1,0 +1,10 @@
+logger:
+  project: sched
+  app: worker
+  file: worker.log
+  level: info
+  outputs: [ "file" ]
+
+etcd:
+  endpoints: ["127.0.0.1:2379"]
+  dial_timeout: 10s
