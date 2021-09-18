@@ -256,6 +256,9 @@ var doc = `{
                 "cron_expr": {
                     "type": "string"
                 },
+                "id": {
+                    "type": "integer"
+                },
                 "name": {
                     "type": "string"
                 }

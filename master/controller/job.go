@@ -40,6 +40,11 @@ func (j *JobController) Save(c *gin.Context) {
 	}
 
 	job := common.NewJob(input.Name, input.Command, input.CronExpr)
+	// 参数包含Id，则修改已存在的Job
+	if input.Id != 0 {
+		job.Id = input.Id
+	}
+
 	if err := JobMgr.Save(c, job); err != nil {
 		c.JSON(400, common.NewResponse(c, common.JobSaveError, job))
 		return
